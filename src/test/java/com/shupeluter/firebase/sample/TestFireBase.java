@@ -8,6 +8,8 @@ import java.io.IOException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.OidcProviderConfig.CreateRequest;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,6 +33,13 @@ public class TestFireBase {
         }
 
         
+    }
+
+    @Test
+    public void testRegistUser(){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        CreateRequest request = new CreateRequest();
+
     }
 
 }
