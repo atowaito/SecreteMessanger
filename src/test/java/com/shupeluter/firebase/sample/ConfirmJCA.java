@@ -30,30 +30,20 @@ public class ConfirmJCA {
     String KEY_PUBLIC="src/test/resources/keys/public.der";
 
     @Test
-    
-    public void OpenSSLの共通かぎファイルを読み込む() throws NoSuchAlgorithmException{
+    public void OpenSSLの共通かぎファイルを読み込んでテキストを暗号化する() throws NoSuchAlgorithmException{
         logger.info("OpenSSLの共通かぎファイルを読み込む");
-        Path path = Paths.get(KEY_PUBLIC);
+        Path path  = Paths.get(KEY_PUBLIC); //左辺は参照、右辺は実体のオブジェクト
+    
         
         try {
-            byte[] cihperBytes = this.generateMesageFile(path,"HelloWrold");
+            byte[] cihperBytes = this.generateMesageFile(path,"この文字を入れ替えて秘密メッセージにするんです");
             Files.write(Paths.get("encryptedByJCA.txt"), cihperBytes);
             logger.info("openssl rsautl -decrypt -inkey hoge.pem -in encryptedByJCA.txt");
-        } catch (IOException | InvalidKeySpecException | NoSuchPaddingException e) {
+        } catch (IOException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
             fail();
-        } catch (InvalidKeyException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        } 
         assertTrue(path.toFile().exists());
- 
     } 
 
     private byte[] generateMesageFile(Path  keyfile,String message) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException{
