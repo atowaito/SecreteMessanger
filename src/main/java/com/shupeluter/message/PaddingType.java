@@ -8,4 +8,9 @@ public enum PaddingType {
         string=name;
     }
 
+    @Override
+    public String toString(){
+        return string;        
+    }
+
 }

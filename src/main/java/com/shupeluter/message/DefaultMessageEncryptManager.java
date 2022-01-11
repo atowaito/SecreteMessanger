@@ -3,6 +3,7 @@ package com.shupeluter.message;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -11,6 +12,7 @@ import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
+    String KEY_PUBLIC="src/test/resources/keys/public.der";
 
     @Override
     /**
@@ -35,8 +37,10 @@ public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
 
     }
 
+
+
    protected Path getFile(String keyId){
-       //FIXME: 
-       return null;
+       //FIXME 処理は後から追加する
+       return Paths.get(KEY_PUBLIC);
    } 
 }
