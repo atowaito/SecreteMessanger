@@ -46,14 +46,14 @@ public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
         KeySpec keySpec = null;
         KeyFactory keyFactory;
         PrivateKey privateKey=null;
-        
+
         return privateKey;
     }
 
     protected Path getFile(String keyId) {
         // FIXME 処理は後から追加する
         if (SECRET_KEY_ID.equals(keyId)) {
-            return Paths.get(Key)
+            return Paths.get(KEY_PRIVATE);
         } else {
             return Paths.get(KEY_PUBLIC);
         }
