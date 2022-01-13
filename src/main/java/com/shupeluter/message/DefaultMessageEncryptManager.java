@@ -44,7 +44,8 @@ public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
     }
 
     @Override
-    public PrivateKey getPrivateKey() {
+    public PrivateKey getPrivateKey(String id) {
+        //FIXME IDで選べるように
         Path keyFile = this.getFile(SECRET_KEY_ID);
         KeySpec keySpec = null;
         KeyFactory keyFactory;
