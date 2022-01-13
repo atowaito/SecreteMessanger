@@ -1,18 +1,30 @@
 package com.shupeluter.message;
 
+import java.io.File;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public interface MessageEncyptManager {
     String encryptMessage(String keyId ,String message);
     String readMessage(String keyId, String message);
+    
+    /**
+     * キーストアに共通鍵を登録する。
+     */
+    void registPublicKey(String keyId,File keyFile);
+    
+
     /**
      * keyIdで一意に決定される共通鍵を返却する。
+     * @param keyId
+     * @return
      */
     PublicKey getPublickey(String keyId);
 
-    /***
-     * 自分の秘密鍵を返却する
+    /**
+     * keyIdで一意に決定される秘密鍵を返却する。
+     * @param keyId
+     * @return
      */
     PrivateKey getPrivateKey(String keyId);
 

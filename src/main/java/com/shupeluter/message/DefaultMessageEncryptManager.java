@@ -51,7 +51,6 @@ public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
         KeyFactory keyFactory;
         PrivateKey privateKey=null;
 
-
         try {
             keySpec = new PKCS8EncodedKeySpec(Files.readAllBytes(keyFile));
             keyFactory = KeyFactory.getInstance("RSA");
