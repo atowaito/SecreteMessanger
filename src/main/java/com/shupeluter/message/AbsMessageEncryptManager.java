@@ -1,8 +1,10 @@
 package com.shupeluter.message;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
@@ -19,22 +21,23 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
         return this.encryptMessage(key, message);
     }
 
-    /**こっちが本体 */
+    /** こっちが本体 */
     /**
      * 共通鍵を用いてメッセージを暗号化する。
+     * 
      * @param key
      * @param message
      * @return
      */
-    private String encryptMessage(PublicKey key,String message){
-        
-        try{
+    private String encryptMessage(PublicKey key, String message) {
+
+        try {
             Cipher cipher = Cipher.getInstance(PaddingType.DEFAULT.toString());
-            cipher.init(Cipher.ENCRYPT_MODE,key);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] encriptedMessage = cipher.doFinal(message.getBytes(StandardCharsets.UTF_8));
-            String encriptedStrMessage=Base64.getEncoder().encodeToString(encriptedMessage);
+            String encriptedStrMessage = Base64.getEncoder().encodeToString(encriptedMessage);
             return encriptedStrMessage;
-        } catch (NoSuchPaddingException e){
+        } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
             // TODO Auto-generated catch block
@@ -52,6 +55,32 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
 
         return "";
 
+    }
+
+    /**
+     * このメソッドは受信側での利用もしくは、テストでの利用を想定している
+     * メッセージ送信側で鍵をはずして送信する方式を選択してはならない。
+     * 
+     * @return
+     * 
+     */
+    @Deprecated
+    public String readMessage(String id, String message) {
+        PrivateKey privateKey = this.getPrivateKey(id);
+        return this.readMessage(id, message);
+    }
+
+    String readMessage(PrivateKey privatekey,String message){
+        try{
+            byte[] messageByte = Base64.getDecoder().decode(message);
+            Cipher cipher = Cipher.getInstance(PaddingType.DEFAULT.toString());
+            cipher.init(Cipher.DECRYPT_MODE,privatekey);
+            byte[] decriptedMessage = cipher.doFinal(messageByte);
+            return new String(decriptedMessage,StandardCharsets.UTF_8);
+        } catch ( NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

@@ -10,12 +10,15 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
     String KEY_PUBLIC = "src/test/resources/keys/public.der";
     String KEY_PRIVATE = "src/test/resources/keys/private.pk8";
     String SECRET_KEY_ID = "secret";
+
+    
 
     @Override
     /**
@@ -46,6 +49,16 @@ public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
         KeySpec keySpec = null;
         KeyFactory keyFactory;
         PrivateKey privateKey=null;
+
+
+        try {
+            keySpec = new PKCS8EncodedKeySpec(Files.readAllBytes(keyFile));
+            keyFactory = KeyFactory.getInstance("RSA");
+            privateKey = keyFactory.generatePrivate(keySpec);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         return privateKey;
     }
