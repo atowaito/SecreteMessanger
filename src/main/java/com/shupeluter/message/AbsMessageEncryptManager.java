@@ -1,11 +1,18 @@
 package com.shupeluter.message;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.CertificateException;
 import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -14,6 +21,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
+
+    final Path PATH_KEY_STORE = Paths.get("./systemkeystore");
+    final String PASSWORD_STORE = "password";
+
+    KeyStore store;
 
     @Override
     public String encryptMessage(String keyid, String message) {
@@ -70,17 +82,39 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
         return this.readMessage(id, message);
     }
 
-    String readMessage(PrivateKey privatekey,String message){
-        try{
+    String readMessage(PrivateKey privatekey, String message) {
+        try {
             byte[] messageByte = Base64.getDecoder().decode(message);
             Cipher cipher = Cipher.getInstance(PaddingType.DEFAULT.toString());
-            cipher.init(Cipher.DECRYPT_MODE,privatekey);
+            cipher.init(Cipher.DECRYPT_MODE, privatekey);
             byte[] decriptedMessage = cipher.doFinal(messageByte);
-            return new String(decriptedMessage,StandardCharsets.UTF_8);
-        } catch ( NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e){
+            return new String(decriptedMessage, StandardCharsets.UTF_8);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
+                | BadPaddingException e) {
             e.printStackTrace();
         }
         return "";
     }
 
+    @Override
+    public void registPublicKey(String keyId, File keyFile) {
+        // storeを保持していない場合生成する
+        if (store == null) {
+            try {
+                store = KeyStore.getInstance("PKCS12");
+
+                if (PATH_KEY_STORE.toFile().exists() && PATH_KEY_STORE.toFile().isFile()) {
+                    try (FileInputStream stream = new FileInputStream(PATH_KEY_STORE.toFile())) {
+                        store.load(
+                                stream, PASSWORD_STORE.toCharArray());
+                    }
+                }
+            } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
+
+                e.printStackTrace();
+            }
+        }
+
+        //TODO 鍵を生成して、登録する。
+    }
 }
