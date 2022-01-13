@@ -115,6 +115,7 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
             }
         }
 
-        //TODO 鍵を生成して、登録する。
+        //TODO 鍵のPathから共通鍵を生成するメソッドを追加しないとね。
+        store.setEntry(keyId, );
     }
 }
