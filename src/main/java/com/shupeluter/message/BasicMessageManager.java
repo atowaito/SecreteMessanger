@@ -1,5 +1,6 @@
 package com.shupeluter.message;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,12 +14,10 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
+public class BasicMessageManager extends AbsMessageEncryptManager {
     String KEY_PUBLIC = "src/test/resources/keys/public.der";
     String KEY_PRIVATE = "src/test/resources/keys/private.pk8";
     String SECRET_KEY_ID = "secret";
-
-    
 
     @Override
     /**
@@ -32,6 +31,7 @@ public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
 
         try {
             keySpec = new X509EncodedKeySpec(Files.readAllBytes(keyFile));
+            
             keyFactory = KeyFactory.getInstance("RSA");
             publicKey = keyFactory.generatePublic(keySpec);
 
@@ -44,12 +44,19 @@ public class DefaultMessageEncryptManager extends AbsMessageEncryptManager {
     }
 
     @Override
+    public void registPublicKey(String keyId, PublicKey key) {
+        super.registPublicKey(keyId, key);
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public PrivateKey getPrivateKey(String id) {
-        //FIXME IDで選べるように
+        // FIXME IDで選べるように
         Path keyFile = this.getFile(SECRET_KEY_ID);
         KeySpec keySpec = null;
         KeyFactory keyFactory;
-        PrivateKey privateKey=null;
+        PrivateKey privateKey = null;
 
         try {
             keySpec = new PKCS8EncodedKeySpec(Files.readAllBytes(keyFile));

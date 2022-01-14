@@ -1,18 +1,11 @@
 package com.shupeluter.message;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.CertificateException;
 import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -22,11 +15,8 @@ import javax.crypto.NoSuchPaddingException;
 
 public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
 
-    final Path PATH_KEY_STORE = Paths.get("./systemkeystore");
+   
     final String PASSWORD_STORE = "password";
-
-    KeyStore store;
-
     @Override
     public String encryptMessage(String keyid, String message) {
         PublicKey key = this.getPublickey(keyid);
@@ -97,25 +87,7 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
     }
 
     @Override
-    public void registPublicKey(String keyId, File keyFile) {
-        // storeを保持していない場合生成する
-        if (store == null) {
-            try {
-                store = KeyStore.getInstance("PKCS12");
+    public void registPublicKey(String keyId, PublicKey key) {
 
-                if (PATH_KEY_STORE.toFile().exists() && PATH_KEY_STORE.toFile().isFile()) {
-                    try (FileInputStream stream = new FileInputStream(PATH_KEY_STORE.toFile())) {
-                        store.load(
-                                stream, PASSWORD_STORE.toCharArray());
-                    }
-                }
-            } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
-
-                e.printStackTrace();
-            }
-        }
-
-        //TODO 鍵のPathから共通鍵を生成するメソッドを追加しないとね。
-        store.setEntry(keyId, );
     }
 }

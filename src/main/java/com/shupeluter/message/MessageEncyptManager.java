@@ -1,6 +1,6 @@
 package com.shupeluter.message;
 
-import java.io.File;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -11,7 +11,7 @@ public interface MessageEncyptManager {
     /**
      * キーストアに共通鍵を登録する。
      */
-    void registPublicKey(String keyId,File keyFile);
+    void registPublicKey(String keyId,PublicKey key);
     
 
     /**
