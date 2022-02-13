@@ -13,7 +13,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -75,6 +74,8 @@ public class BasicMessageManager extends AbsMessageEncryptManager {
 
         return privateKey;
     }
+
+    
 
     //TODO: Base64化して入れておくのがいいのか。もしくはBase64でエンコードしたファイルを入れておくのがいいのか悩みどころ
     private PublicKey getKeyByFirebase(String key){

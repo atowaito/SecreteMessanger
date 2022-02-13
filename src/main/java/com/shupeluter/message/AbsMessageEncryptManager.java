@@ -69,7 +69,10 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
     @Deprecated
     public String readMessage(String id, String message) {
         PrivateKey privateKey = this.getPrivateKey(id);
-        return this.readMessage(id, message);
+        if(privateKey !=null){
+            return this.readMessage(id, message);
+        }
+        return "";
     }
 
     String readMessage(PrivateKey privatekey, String message) {
