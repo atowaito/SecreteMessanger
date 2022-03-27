@@ -50,7 +50,6 @@ public class BasicMessageManager extends AbsMessageEncryptManager {
 
     @Override
     public void registPublicKey(String keyId, PublicKey key) {
-        super.registPublicKey(keyId, key);
         DatabaseReference ref =  this.initalizeFirebase();
         ref.setValueAsync(keyId,key);
     }
