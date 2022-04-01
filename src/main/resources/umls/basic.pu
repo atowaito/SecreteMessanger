@@ -1,0 +1,16 @@
+@startuml 想定ユースケース
+    skinparam actorStyle awesome 
+    actor User1 as user1
+    actor User2 as user2
+    actor chatServer as server
+    user1-->(generateKeypairs)
+    user2-->(generateKeypairs)
+
+    user1-->(registPublicKey)
+    user2-->(registPublicKey)
+
+    "RSA形式の鍵ペアを生成" as (generateKeypairs)
+    "公開鍵をチャットサーバに配布" as (registPublicKey)
+
+
+@enduml
