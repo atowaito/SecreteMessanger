@@ -1,8 +1,9 @@
 package com.shupeluter.message;
 
-import java.util.logging.Logger;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
-import com.google.firebase.messaging.Message;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 
@@ -35,8 +36,8 @@ public class BasicMessageManagerTest {
     public void 暗号化メッセージを作ってみる(){
         String encriptedMessage = manager.encryptMessage("sample", "あした学校に行きたいです。");
         logger.info(encriptedMessage);
-
-        manager.readMessage("test",encriptedMessage);
-
+        logger.info(manager.readMessage("test", encriptedMessage));
+        assertEquals("あした学校に行きたいです。",manager.readMessage("test",encriptedMessage));
+        
     }
 }

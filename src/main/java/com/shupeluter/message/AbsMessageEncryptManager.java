@@ -12,6 +12,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.shupeluter.util.AppException;
+
 public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
 
    
@@ -69,7 +71,7 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
     public String readMessage(String id, String message) {
         PrivateKey privateKey = this.getPrivateKey(id);
         if(privateKey !=null){
-            return this.readMessage(id, message);
+            return this.readMessage(privateKey, message);
         }
         return "";
     }
@@ -89,7 +91,40 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
     }
 
     @Override
-    public void registPublicKey(String keyId, PublicKey key) {
-
+    public void generateKeyPair(String keyid) throws AppException{
+        // TODO Auto-generated method stub
+        try{
+            KeyPairGenerator keygen = KeyPairGenerator.getInstance("RSA");
+            keygen.initialize(2024);
+            KeyPair pair = keygen.generateKeyPair();
+            
+            this.registPublicKey(keyid, pair.getPublic());
+            this.registSecretKey(keyid, pair.getPrivate());
+            
+        } catch (NoSuchAlgorithmException ex){
+            AppException aex = new AppException();
+            aex.addSuppressed(ex);
+            throw aex;
+        }
     }
+
+    @Override
+    public PrivateKey getPrivateKey(String keyId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public PublicKey getPublickey(String keyId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void registPublicKey(String keyId, PublicKey key) throws AppException {
+        // TODO Auto-generated method stub
+ 
+    }
+
+
 }
