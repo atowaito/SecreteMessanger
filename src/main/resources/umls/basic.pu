@@ -1,16 +1,118 @@
 @startuml 想定ユースケース
+    left to right direction
     skinparam actorStyle awesome 
-    actor User1 as user1
-    actor User2 as user2
+
+
+    actor "メッセージ受信者" as user1
+    actor "メッセージ送信者 " as user2
     actor chatServer as server
     user1-->(generateKeypairs)
     user2-->(generateKeypairs)
 
     user1-->(registPublicKey)
     user2-->(registPublicKey)
-
+    user1-->(getMessage)
+    user2-->(sendMessage)
+    server-->(recordMessage)
+    server-->(createUserKeypairs)
+    server-->(deletePublicKey)
+    server-->(recordPublicKey)
     "RSA形式の鍵ペアを生成" as (generateKeypairs)
     "公開鍵をチャットサーバに配布" as (registPublicKey)
+    "User1向けのメッセージを登録" as (sendMessage)
+    "メッセージを取得" as (getMessage)
+    "メッセージを保持している公開鍵で暗号化して登録" as (recordMessage)
+    "参加者向けのキーペアを代理生成" as (createUserKeypairs)
+    "参加者の公開鍵情報を削除" as (deletePublicKey)
+    "参加者の公開鍵を保管(Base64)" as (recordPublicKey)
 
+
+
+@enduml
+
+@startuml 鍵生成からメッセージ送信/受信シーケンス
+actor Alice as alice
+actor Bob as bob
+participant ChatServer as chat
+database datastore as db
+
+activate alice
+activate chat
+
+== 鍵登録 ==
+alice ->alice: 鍵ペア(RSA)を作る
+activate alice
+alice-->alice: 鍵ペアを返却
+deactivate alice
+
+alice->chat: 公開鍵を登録
+activate chat
+chat->db:key=userid,vlaue=公開鍵として登録
+activate db
+db-->>chat 
+deactivate chat
+
+activate bob
+bob ->bob: 鍵ペア(RSA)を作る
+activate bob
+bob-->bob: 鍵ペアを返却
+deactivate bob
+
+bob->chat: 公開鍵を登録
+activate chat
+chat->db:key=userid,vlaue=公開鍵として登録
+activate db
+db-->>chat 
+deactivate chat
+
+==メッセージ送信==
+
+alice -> chat:メッセージを送信
+activate alice
+
+group Bobへのメッセージ処理
+    chat -> chat: メッセージを暗号化(ボブの共通鍵)
+    activate chat
+    chat --> chat: 暗号化済メッセージを返却
+    deactivate chat
+
+    chat -> chat: メッセージを符号化(Base64)
+    activate chat
+    chat --> chat: 符号化済みテキストを返却
+    chat -> db: from=alice,to=bob,key=other,value=符号化済みテキスト
+    deactivate chat
+end
+
+group Aliceへのメッセージ処理
+    activate chat
+    chat --> chat: 暗号化済メッセージを返却
+    deactivate chat
+
+    chat -> chat: メッセージを符号化(Base64)
+    activate chat
+    chat --> chat: 符号化済みテキストを返却
+    chat -> db: from=alice,to=bob,key=mine,value=符号化済みテキスト
+    deactivate chat
+end
+
+deactivate chat
+
+
+
+chat --> alice:アリスの公開鍵で暗号化したメッセージ(Base64符号化済み)を返信
+deactivate alice
+
+==メッセージ受信==
+loop [メッセージ取得]
+    bob -> bob: 1秒ウエイト
+    activate bob 
+    bob -> chat: メッセージ取得
+    activate chat
+    chat -> db: メッセージ取得 to=bob,key=bobの鍵,最終取得済みメッセージID
+    db-->chat: 条件に会うメッセージをすべて返却
+    chat --> bob: 受け取っていない暗号化済みメッセージ(複数)
+    deactivate bob
+    deactivate chat
+end
 
 @enduml
