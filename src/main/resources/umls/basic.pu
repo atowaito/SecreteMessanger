@@ -26,8 +26,6 @@
     "参加者の公開鍵情報を削除" as (deletePublicKey)
     "参加者の公開鍵を保管(Base64)" as (recordPublicKey)
 
-
-
 @enduml
 
 @startuml 鍵生成からメッセージ送信/受信シーケンス
