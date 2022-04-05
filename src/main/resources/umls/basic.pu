@@ -78,7 +78,7 @@ group Bobへのメッセージ処理
     activate chat
     chat --> chat: 符号化済みテキストを返却
     chat -> db: from=alice,to=bob,key=other,value=符号化済みテキスト
-    deactivate chat
+
 end
 
 group Aliceへのメッセージ処理
@@ -93,7 +93,7 @@ group Aliceへのメッセージ処理
     deactivate chat
 end
 
-deactivate chat
+
 
 
 
@@ -113,4 +113,15 @@ loop [メッセージ取得]
     deactivate chat
 end
 
+==キーペア代理生成==
+alice -> chat:キーペアの代理生成を要求
+activate alice
+chat->chat: キーペアを代理生成
+activate chat
+chat-->db: key=userid,value=代理生成済み公開鍵を保存
+
+
+chat-->alice: 代理生成済み秘密鍵を返却
+deactivate alice
+deactivate chat
 @enduml

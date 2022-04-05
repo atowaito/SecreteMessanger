@@ -1,0 +1,69 @@
+@startuml 鍵生成からメッセージ送信/受信シーケンス
+box "Smart Phone側の処理"
+actor Alice as alice
+actor Bob as bob
+participant MessageManager as chat
+end box
+
+box "FireBaseで実現"
+database FireBase as db
+end box
+
+activate alice
+activate chat
+
+== 鍵登録 ==
+alice ->alice: 鍵ペア(RSA)を作る
+activate alice
+alice-->alice: 鍵ペアを返却
+deactivate alice
+
+alice->chat: 公開鍵を登録
+activate chat
+chat->db:key=userid,vlaue=公開鍵として登録
+activate db
+db-->>chat 
+deactivate chat
+
+activate bob
+bob ->bob: 鍵ペア(RSA)を作る
+activate bob
+bob-->bob: 鍵ペアを返却
+deactivate bob
+
+bob->chat: 公開鍵を登録
+activate chat
+chat->db:key=userid,vlaue=公開鍵として登録
+activate db
+db-->>chat 
+deactivate chat
+
+==メッセージ送信==
+
+alice -> chat:メッセージを送信
+activate alice
+
+group Bobへのメッセージ処理
+    chat -> chat: メッセージを暗号化(ボブの共通鍵)
+    activate chat
+    chat --> chat: 暗号化済メッセージを返却
+    deactivate chat
+
+    chat -> chat: メッセージを符号化(Base64)
+    activate chat
+    chat --> chat: 符号化済みテキストを返却
+    chat -> db: from=alice,to=bob,key=other,value=符号化済みテキスト
+
+end
+
+group Aliceへのメッセージ処理
+    activate chat
+    chat --> chat: 暗号化済メッセージを返却
+    deactivate chat
+
+    chat -> chat: メッセージを符号化(Base64)
+    activate chat
+    chat --> chat: 符号化済みテキストを返却
+    chat -> db: from=alice,to=bob,key=mine,value=符号化済みテキスト
+    deactivate chat
+end

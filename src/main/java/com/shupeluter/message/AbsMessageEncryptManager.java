@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -77,6 +76,12 @@ public abstract class AbsMessageEncryptManager implements MessageEncyptManager {
             return this.readMessage(privateKey, message);
         }
         return "";
+    }
+
+    @Override
+    public void registSecretKey(String keyId, PrivateKey key) throws AppException {
+        // TODO Auto-generated method stub
+        
     }
 
     String readMessage(PrivateKey privatekey, String message) {

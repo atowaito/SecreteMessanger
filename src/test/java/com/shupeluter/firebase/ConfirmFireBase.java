@@ -1,6 +1,7 @@
 package com.shupeluter.firebase;
 
-import java.io.FileInputStream;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.shupeluter.firebase.sample.User;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ConfirmFireBase {
@@ -31,7 +31,7 @@ public class ConfirmFireBase {
 
     @Test
     public void dummy() throws InterruptedException, IOException {
-
+        assertTrue(true);
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.getApplicationDefault())
                 .setDatabaseUrl("https://secretemessanger-default-rtdb.firebaseio.com/")
