@@ -6,11 +6,22 @@ void main() {
 }
 
 class UIManager {
-  Row getListRow() {
+  static Row getListRow() {
     return Row(
       children: <Widget>[
-        Text('hoge'),
-        Text('fuga'),
+        Container(
+          child: TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'ジャンル',
+            ),
+            controller: null,
+          ),
+          //TODO: 指定の仕方ね
+          height: 30,
+          width: 300,
+          margin: EdgeInsets.all(5),
+        ),
       ],
     );
   }
@@ -61,6 +72,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  List<Widget> items = [];
 
   void _incrementCounter() {
     setState(() {
@@ -69,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
+      items.add(UIManager.getListRow());
       _counter++;
     });
   }
@@ -88,35 +101,18 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          child: Column(children: [
+        Container(
+          child: ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return items[index];
+              },
+              itemCount: items.length),
+          height: 400,
+          width: 400,
         ),
-      ),
+      ])),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
