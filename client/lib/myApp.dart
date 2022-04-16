@@ -1,12 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:fl_chart/fl_chart.dart';
+import 'dart:math';
+import "src/MyChart.dart";
+
+//import 'package:example/utils/color_extensions.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class UIManager {
-  static Row getListRow() {
+  static List<Widget> _items = [];
+
+  static IconButton inclease = new IconButton(
+    icon: Icon(Icons.add),
+    onPressed: () {
+      _items.add(Text('hoge'));
+    },
+  );
+
+  static List<Widget> getList() {
+    if (_items.isEmpty) {
+      UIManager.addRow();
+    }
+    return _items;
+  }
+
+  static void addRow() {
+    if (_items.isEmpty) {
+      _items.add(UIManager._getNewListRow());
+    } else {
+      Row row = _items.last as Row;
+      Container cont = row.children[0] as Container;
+      TextField tf = cont.child as TextField;
+      TextEditingController tc = tf.controller as TextEditingController;
+      String text = tc.text;
+
+      if (text != "") {
+        _items.add(UIManager._getNewListRow());
+      }
+    }
+  }
+
+  static Row getControler() {
+    return Row(children: [
+      IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () {
+          //UIManager.addRow();
+        },
+      ),
+    ]);
+  }
+
+  static Row _getNewListRow() {
     return Row(
       children: <Widget>[
         Container(
@@ -15,16 +63,24 @@ class UIManager {
               border: OutlineInputBorder(),
               labelText: 'ジャンル',
             ),
-            controller: null,
+            controller: new TextEditingController(),
           ),
           //TODO: 指定の仕方ね
           height: 30,
           width: 300,
           margin: EdgeInsets.all(5),
         ),
+        Container(
+            child: Slider(
+          value: _continuousValue.value,
+          min: 0,
+          max: 100,
+        )),
       ],
     );
   }
+
+  static Row getLatestField() => _items.last as Row;
 }
 
 class MyApp extends StatelessWidget {
@@ -74,6 +130,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   List<Widget> items = [];
 
+  void affectSliderChange() {
+    setState(() {});
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -81,8 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      items.add(UIManager.getListRow());
-      _counter++;
+      UIManager.addRow();
     });
   }
 
@@ -102,15 +161,27 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
           child: Column(children: [
+        Container(child: UIManager.getControler()),
         Container(
           child: ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                return items[index];
+                return UIManager.getList()[index];
               },
-              itemCount: items.length),
-          height: 400,
+              itemCount: UIManager.getList().length),
+          height: 250,
           width: 400,
         ),
+        Container(
+          child: PieChart(
+            PieChartData(
+              borderData: FlBorderData(show: false),
+              sections: showingSections(),
+            ),
+          ),
+          height: 250,
+          width: 400,
+          //color: Color.fromRGBO(10, 100, 20, 0.5),
+        )
       ])),
 
       floatingActionButton: FloatingActionButton(
@@ -118,6 +189,86 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  List<PieChartSectionData> showingSections() {
+    return List.generate(
+      4,
+      (i) {
+        final isTouched = i == 1;
+        final opacity = isTouched ? 1.0 : 0.6;
+
+        const color0 = Color(0xff0293ee);
+        const color1 = Color(0xfff8b250);
+        const color2 = Color(0xff845bef);
+        const color3 = Color(0xff13d38e);
+
+        switch (i) {
+          case 0:
+            return PieChartSectionData(
+              color: color0.withOpacity(opacity),
+              value: double.parse("0.022e-04"),
+              title: 'hoge',
+              radius: 80,
+              titleStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff044d7c)),
+              titlePositionPercentageOffset: 0.55,
+              borderSide: isTouched
+                  ? BorderSide(color: color0, width: 6)
+                  : BorderSide(color: color0.withOpacity(0)),
+            );
+          case 1:
+            return PieChartSectionData(
+              color: color1.withOpacity(opacity),
+              value: 0.000001,
+              title: '',
+              radius: 80,
+              titleStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff90672d)),
+              titlePositionPercentageOffset: 0.55,
+              borderSide: isTouched
+                  ? BorderSide(color: color1, width: 6)
+                  : BorderSide(color: color2.withOpacity(0)),
+            );
+          case 2:
+            return PieChartSectionData(
+              color: color2.withOpacity(opacity),
+              value: 0.000001,
+              title: '',
+              radius: 80,
+              titleStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff4c3788)),
+              titlePositionPercentageOffset: 0.6,
+              borderSide: isTouched
+                  ? BorderSide(color: color2, width: 6)
+                  : BorderSide(color: color2.withOpacity(0)),
+            );
+          case 3:
+            return PieChartSectionData(
+              color: color3.withOpacity(opacity),
+              value: 0.000001,
+              title: '',
+              radius: 70,
+              titleStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff0c7f55)),
+              titlePositionPercentageOffset: 0.55,
+              borderSide: isTouched
+                  ? BorderSide(color: color3, width: 6)
+                  : BorderSide(color: color2.withOpacity(0)),
+            );
+          default:
+            throw Error();
+        }
+      },
     );
   }
 }
