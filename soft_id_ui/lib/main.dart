@@ -92,33 +92,39 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ])),
             Container(
-                child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                Row row = Row(children: [
-                  Container(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'ジャンル',
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  Row row = Row(children: [
+                    Container(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'ジャンル',
+                        ),
+                        controller: new TextEditingController(),
                       ),
-                      controller: new TextEditingController(),
+                      height: 30,
+                      width: 300,
+                      margin: EdgeInsets.all(5),
                     ),
-                    height: 30,
-                    width: 300,
-                    margin: EdgeInsets.all(5),
-                  ),
-                  /*Container(
-                      child: Slider(
-                    value: line[index].getScore(),
-                    onChanged: (double value) {
-                      line[index].setScore(value);
-                    }*/,
-                  ))
-                ]);
-                return row;
-              },
-              itemCount: line.length,
-            )),
+                    Container(
+                        child: Slider(
+                      value: line[index].getScore(),
+                      label: line[index].getScore().toString(),
+                      onChanged: (double val) {
+                        setState(() {
+                          line[index].setScore(val);
+                        });
+                      },
+                    ))
+                  ]);
+                  return row;
+                },
+                itemCount: line.length,
+              ),
+              height: 250,
+              width: 600,
+            ),
           ],
         ),
       ),
